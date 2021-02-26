@@ -17,5 +17,9 @@
   "dependencies": {
     "mathjs": "^3.20.2",
     "ml-util": "^1.1.1"
-  }
+  },
+  "browserslist": [
+    "since 2017-06"
+  ]
+  
 }
