@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime'
 import math from 'mathjs';
-import {initializeThetas, initializeThetasVector} from './util';
+import {initializeThetas, initializeThetasVector, convertYandVector} from './util';
 import {nnCostFunction} from './nnCostFunction';
 
 const input_layer_size = 28*28;
@@ -75,11 +75,15 @@ export class MnistData {
     });
 
     const labelsRequest = fetch(MNIST_LABELS_PATH);
+
+    
     const [imgResponse, labelsResponse] =
         await Promise.all([imgRequest, labelsRequest]);
 
 
+
     this.datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
+
 
     // Create shuffled indices into the train/test set for when we select a
     // random dataset element for training / validation.
@@ -147,17 +151,22 @@ async function showExamples(data) {
     // Get the examples
     const examples = data.nextTestBatch(20);
     const numExamples = examples.xs.shape[0];
+
+    let temp = examples.labels.arraySync();
     
     // Create a canvas element to render each example
     for (let i = 0; i < numExamples; i++) {
+      
       const imageTensor = tf.tidy(() => {
         // Reshape the image to 28x28 px
         return examples.xs
           .slice([i, 0], [1, examples.xs.shape[1]])
           .reshape([28, 28, 1]);
       });
+      
 
       examples[i] = await (tf.browser.toPixels(imageTensor));
+     
       
       const canvas = document.createElement('canvas');
       canvas.width = 28;
@@ -179,8 +188,8 @@ async function showExamples(data) {
 
     await showExamples(data);
 
-    let Theta1 = initializeThetas(25, input_layer_size+1, 65000);
-    let Theta2 = initializeThetas(10, hidden_layer_size+1, 65000);
+    let Theta1 = initializeThetas(25, input_layer_size+1, NUM_TRAIN_ELEMENTS);
+    let Theta2 = initializeThetas(10, hidden_layer_size+1, NUM_TRAIN_ELEMENTS);
 
     /*
     console.log(math.matrix(Theta1));
@@ -190,9 +199,11 @@ async function showExamples(data) {
     nn_params = math.matrix(nn_params);
     */
     let lambda = 0;
-    const examples = data.nextTestBatch(65000);
+    const examples = data.nextTrainBatch(NUM_TRAIN_ELEMENTS);
     let X = examples.xs.arraySync();
     let y = examples.labels.arraySync();
+
+    let newY = convertYandVector(y);
 
     //X = image data
     //y = labels

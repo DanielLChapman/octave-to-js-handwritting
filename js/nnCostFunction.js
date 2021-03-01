@@ -1,9 +1,7 @@
 import math from 'mathjs';
-import { sigmoid } from './util';
+import { sigmoid, convertToVector } from './util';
 
 function combiner(value1, value2) {
-    console.log(value1);
-    console.log(value2);
     if (value1.length !== value2.length) {
         console.log('mismatch');
         return 'Error'
@@ -39,7 +37,10 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
     let Theta1Grad = math.zeros(Theta1.length);
     let Theta2Grad = math.zeros(Theta2.length);
 
+    let test = tf.cast(y[0], 'int32');
+    console.log(test);
 
+/*
     let ones = math.ones(m);
 
     let newX = (math.matrix(combiner(ones._data, X)));
@@ -55,5 +56,7 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
     let h_of_x = sigmoid_x(z3);
 
     console.log(h_of_x);
+
+    console.log(math.zeros(num_labels, m));*/
     
 }
