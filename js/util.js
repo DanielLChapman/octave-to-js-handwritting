@@ -37,9 +37,14 @@ export function sigmoid(t) {
   return 1 / (1 + Math.pow(Math.E, -t));
 }
 
+export function yVectored(matrix) {
+  return math.transpose(math.matrix(data));
+}
+
 export function convertYandVector(matrix) {
 
   let data = matrix;
+
   let newArr = [];
 
   for (let i = 0; i < data.length; i++) {
@@ -86,4 +91,23 @@ export function convertYandVector(matrix) {
   }
 
   return newArr;
+}
+
+export function clearInfinity(matrix, minVal, maxVal) {
+  
+  let ntest2 = matrix.map(function(value, index, matrix) {
+    
+    if (value.toString() === 'Infinity' ) {
+        let temp = Math.random() * maxVal;
+        return parseFloat(temp);
+    }
+    else if (value.toString() === '-Infinity') {
+        let temp = Math.random() * minVal;
+        return parseFloat(temp);
+    } else {
+        return value;
+    }
+  });
+
+  return ntest2;
 }

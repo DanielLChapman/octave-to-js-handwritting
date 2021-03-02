@@ -153,7 +153,7 @@ async function showExamples(data) {
     const numExamples = examples.xs.shape[0];
 
     let temp = examples.labels.arraySync();
-    
+
     // Create a canvas element to render each example
     for (let i = 0; i < numExamples; i++) {
       
@@ -188,8 +188,8 @@ async function showExamples(data) {
 
     await showExamples(data);
 
-    let Theta1 = initializeThetas(25, input_layer_size+1, NUM_TRAIN_ELEMENTS);
-    let Theta2 = initializeThetas(10, hidden_layer_size+1, NUM_TRAIN_ELEMENTS);
+    let Theta1 = initializeThetas(25, input_layer_size+1, NUM_TRAIN_ELEMENTS/100);
+    let Theta2 = initializeThetas(10, hidden_layer_size+1, NUM_TRAIN_ELEMENTS/100);
 
     /*
     console.log(math.matrix(Theta1));
@@ -198,16 +198,16 @@ async function showExamples(data) {
     nn_params.concat(Theta2);
     nn_params = math.matrix(nn_params);
     */
-    let lambda = 0;
+    let lambda = 1;
     const examples = data.nextTrainBatch(NUM_TRAIN_ELEMENTS);
     let X = examples.xs.arraySync();
     let y = examples.labels.arraySync();
 
-    let newY = convertYandVector(y);
+    let newY = math.transpose(math.matrix(y))
 
     //X = image data
     //y = labels
-    let J = nnCostFunction([Theta1, Theta2], input_layer_size, hidden_layer_size, num_layers, X, y, lambda);
+    let J = nnCostFunction([Theta1, Theta2], input_layer_size, hidden_layer_size, num_layers, X, newY, lambda);
     
 
 
