@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime'
 import math from 'mathjs';
-import {initializeThetas, initializeThetasVector, convertYandVector} from './util';
+import {initializeThetas, initializeThetasVector, convertYandVector, sigmoidGradient, combineTwoVectors, convertToVector} from './util';
 import {nnCostFunction} from './nnCostFunction';
 
 const input_layer_size = 28*28;
@@ -186,10 +186,14 @@ async function showExamples(data) {
     const data = new MnistData();
     await data.load();
 
+    
+
     await showExamples(data);
 
-    let Theta1 = initializeThetas(25, input_layer_size+1, NUM_TRAIN_ELEMENTS/100);
-    let Theta2 = initializeThetas(10, hidden_layer_size+1, NUM_TRAIN_ELEMENTS/100);
+    let Theta1 = initializeThetas(25, input_layer_size, NUM_TRAIN_ELEMENTS/100);
+
+    console.log(Theta1);
+    let Theta2 = initializeThetas(10, hidden_layer_size, NUM_TRAIN_ELEMENTS/100);
 
     /*
     console.log(math.matrix(Theta1));
@@ -201,14 +205,22 @@ async function showExamples(data) {
     let lambda = 1;
     const examples = data.nextTrainBatch(NUM_TRAIN_ELEMENTS);
     let X = examples.xs.arraySync();
+
     let y = examples.labels.arraySync();
 
     let newY = math.transpose(math.matrix(y))
 
     //X = image data
     //y = labels
+
+    let g = math.matrix([-1, -0.5, 0, 0.5, 1]);
+    g = sigmoidGradient(g);
+
+    let VTheta1 = convertToVector(Theta1);
+    let VTheta2 = convertToVector(Theta2);
+
     let J = nnCostFunction([Theta1, Theta2], input_layer_size, hidden_layer_size, num_layers, X, newY, lambda);
     
-
+    console.log(J);
 
 })();

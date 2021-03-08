@@ -34,7 +34,35 @@ export function initializeThetasVector(size1 = 2, size2 = 2, totalNum = 2) {
 }
 
 export function sigmoid(t) {
-  return 1 / (1 + Math.pow(Math.E, -t));
+  let x = Math.E;
+  let y = Math.pow(x, -t);
+  return 1 / (1 + y);
+}
+
+export function sigmoid_x(variable_matrix) {
+  let data = math.matrix(variable_matrix)._data;
+  
+  for (var x = 0; x < data.length; x++) {
+
+      if(!data[x].length) {
+        data[x] = sigmoid(data[x]);
+      } else {
+        for (var i = 0; i < data[x].length; i++) {
+            data[x][i] = sigmoid(data[x][i]);
+        }
+      }
+      
+  }
+
+  return data;
+}
+
+export function sigmoidGradient(z) {
+  let data = math.matrix(z);
+  let x = sigmoid_x(data);
+  let subtracted = math.subtract(1, x);
+
+  return math.dotMultiply(x, subtracted);
 }
 
 export function yVectored(matrix) {
@@ -110,4 +138,53 @@ export function clearInfinity(matrix, minVal, maxVal) {
   });
 
   return ntest2;
+}
+
+export function convertToVector(matrix1) {
+  let output = [];
+  for (var x = 0; x < matrix1.length; x++) {
+    output = output.concat(matrix1[x]);
+  }
+
+  return output;
+}
+
+export function combineTwoVectors(matrix1, matrix2) {
+  let output = [];
+  let matrix_one = math.matrix(matrix1);
+  let matrix_two = math.matrix(matrix2);
+
+  let matrix_one_data = matrix_one._data;
+  let matrix_two_data = matrix_two._data;
+
+  output = matrix_one_data.concat(matrix_two_data);
+
+  return math.matrix(output);
+}
+
+export function grabVectorColumn(matrix1, column_num) {
+  let output = [];
+  let matrix = math.matrix(matrix1)._data;
+  for (let x = 0; x < matrix.length; x++) {
+    output = output.concat(matrix[x][column_num]);
+  }
+
+  return math.matrix(output);
+}
+
+export function vectorMultiplication(vector1, vector2) {
+  let output = [];
+  let vec_1 = math.matrix(vector1)._data;
+  let vec_2 = math.matrix(vector2)._data;
+
+  for (let i = 0; i < vec_1.length; i++) {
+    let temp = [];
+    for (let j = 0;j < vec_2.length; j++) {
+      temp.push(vec_1[i] * vec_2[j]);
+    }
+
+    output.push(temp);
+  }
+
+  return output;
 }

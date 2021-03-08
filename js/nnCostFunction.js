@@ -1,5 +1,5 @@
 import math from 'mathjs';
-import { sigmoid, convertToVector, clearInfinity} from './util';
+import { sigmoid, convertToVector, clearInfinity, sigmoid_x, grabVectorColumn, sigmoidGradient, vectorMultiplication } from './util';
 
 function combiner(value1, value2) {
     if (value1.length !== value2.length) {
@@ -17,21 +17,11 @@ function combiner(value1, value2) {
 
 }
 
-function sigmoid_x(variable_matrix) {
-    let data = variable_matrix._data;
-
-    for (var x = 0; x < data.length; x++) {
-        for (var i = 0; i < data[x].length; i++) {
-            data[x][i] = sigmoid(data[x][i]);
-        }
-    }
-
-    return data;
-}
 
 export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_labels, X, y, lambda) {
     let m = X.length;
     let Theta1 = nn_params[0];
+
     let temp_theta1 = math.sum(math.dotMultiply(Theta1, Theta1));
     //temp_theta1 = math.sum(temp_theta1);
 
@@ -41,21 +31,21 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
     //temp_theta2 = math.sum(temp_theta2);
     let reg =  lambda / (2*m)  * (temp_theta1 + temp_theta2);
 
-
     let J = 0;
-    let Theta1Grad = math.zeros(Theta1.length);
-    let Theta2Grad = math.zeros(Theta2.length);
+    let Theta1Grad = math.zeros(Theta1.length, Theta1[0].length);
+    let Theta2Grad = math.zeros(Theta2.length, Theta2[0].length);
 
 
     let ones = math.ones(m);
 
-    let newX = (math.matrix(combiner(ones._data, X)));
+    //let newX = (math.matrix(combiner(ones._data, X)));
 
-    let z2 = math.multiply(Theta1, math.transpose(newX));
+
+    let z2 = math.multiply(Theta1, math.transpose(X));
 
     let a2 = sigmoid_x(z2);
 
-    let newA2 = math.matrix(combiner(ones._data, math.transpose(a2)));
+    let newA2 = math.matrix( math.transpose(a2));
 
     let z3 = math.multiply(Theta2, math.transpose(newA2));
 
@@ -76,6 +66,7 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
     )
 */
 
+    
     let log_h_of_x = (math.log10(h_of_x));
 
     log_h_of_x = clearInfinity(log_h_of_x, -550, 550);
@@ -92,16 +83,63 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
 
     let total = math.subtract(math_multiple_one, math_multiple_two);
 
-    //New sum formula
-    console.log(math.sum(math.sum(total)));
-
     J = onem * math.sum(math.sum(total));
-
-    console.log(J);
 
     J = J + reg;
 
     console.log(J);
+
+    //back propoagation
+
+    for(let i = 0; i < 40; i++) {
+        console.log(i);
+        let a1 = X[i];
+        a1 = math.transpose(a1);
+
+       z2 = math.multiply(Theta1, a1);
+
+       a2 = sigmoid_x(z2);
+
+       z3 = math.multiply(Theta2, a2);
+
+       let a3 = sigmoid_x(z3);
+
+       let delta3 = math.subtract(a3, grabVectorColumn(y, i));
+
+      let delta2 = math.transpose(Theta2);
+      delta2 = math.multiply(delta2, delta3);
+      delta2 = math.dotMultiply(delta2, sigmoidGradient(z2));
+
+      Theta2Grad = math.add(Theta2Grad, math.matrix(vectorMultiplication(delta3, a2)));
+      Theta1Grad = math.add(Theta1Grad, vectorMultiplication(delta2, a1));
+
+    }
+
+    Theta2Grad = math.add(math.dotMultiply(onem, Theta2Grad), math.multiply((lambda/m), Theta2));
+    Theta1Grad = math.add(math.dotMultiply(onem, Theta1Grad), math.multiply((lambda/m), Theta1));
+
+    return [Theta1Grad, Theta2Grad];
+
+/*
+    a1 = X(t, :);
+    a1 = a1';
+    z2 = Theta1 * a1;
+    a2 = sigmoid(z2);
+    a2 = [1 ; a2];
+    z3 = Theta2 * a2;
+    a3 = sigmoid(z3);
+
+    delta3 =  a3 - y_vectored(:, t);
+
+    z2 = [1; z2];
+    delta2 = (Theta2' * delta3) .* sigmoidGradient(z2);
+
+    delta2 = delta2(2:end);
+
+    Theta2_grad = Theta2_grad + delta3 * a2';
+    Theta1_grad = Theta1_grad + delta2 * a1';
+*/
+
 
     
 }
