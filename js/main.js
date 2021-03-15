@@ -2,6 +2,7 @@ import 'regenerator-runtime/runtime'
 import math from 'mathjs';
 import {initializeThetas, initializeThetasVector, convertYandVector, sigmoidGradient, combineTwoVectors, convertToVector} from './util';
 import {nnCostFunction} from './nnCostFunction';
+import {fmincg} from './Plugin/fmincg';
 
 const input_layer_size = 28*28;
 const hidden_layer_size = 25;
@@ -191,8 +192,6 @@ async function showExamples(data) {
     await showExamples(data);
 
     let Theta1 = initializeThetas(25, input_layer_size, NUM_TRAIN_ELEMENTS/100);
-
-    console.log(Theta1);
     let Theta2 = initializeThetas(10, hidden_layer_size, NUM_TRAIN_ELEMENTS/100);
 
     /*
@@ -219,8 +218,35 @@ async function showExamples(data) {
     let VTheta1 = convertToVector(Theta1);
     let VTheta2 = convertToVector(Theta2);
 
-    let J = nnCostFunction([Theta1, Theta2], input_layer_size, hidden_layer_size, num_layers, X, newY, lambda);
+    //let J = nnCostFunction([Theta1, Theta2], input_layer_size, hidden_layer_size, num_layers, X, newY, lambda);
     
-    console.log(J);
+    //console.log(J);
+
+    let options = 50;
+
+    let nn_params = math.matrix(VTheta1.concat(VTheta2));
+    //nn_params = math.reshape(nn_params, [nn_params._size, 1]);
+
+    console.log({
+      X: X,
+      nn_params: [Theta1, Theta2],
+      input_layer_size,
+      hidden_layer_size,
+      num_layers,
+      newY,
+      lambda
+    });
+
+
+    //let J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
+
+    console.log(nn_params);
+    
+    //let [nn_params, cost] 
+    let output = fmincg(nnCostFunction, nn_params, options, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
+    
+    console.log(output);
+
+
 
 })();

@@ -1,5 +1,5 @@
 import math from 'mathjs';
-import { sigmoid, convertToVector, clearInfinity, sigmoid_x, grabVectorColumn, sigmoidGradient, vectorMultiplication } from './util';
+import { sigmoid, convertToVector, clearInfinity, sigmoid_x, grabVectorColumn, sigmoidGradient, vectorMultiplication} from './util';
 
 function combiner(value1, value2) {
     if (value1.length !== value2.length) {
@@ -18,22 +18,33 @@ function combiner(value1, value2) {
 }
 
 
+
+
 export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_labels, X, y, lambda) {
     let m = X.length;
-    let Theta1 = nn_params[0];
+    let params = math.matrix(nn_params)._data;
+
+    let Theta1 = params.splice(0, input_layer_size*hidden_layer_size);
+    Theta1 = math.reshape(math.matrix(Theta1), [hidden_layer_size, input_layer_size]);
+    let Theta2 = math.reshape(math.matrix(params), [num_labels, hidden_layer_size]);
+
+    //let Theta1 = nn_params.splice(0, input_layer_size*hidden_layer_size);
+    
+    //let Theta1 = nn_params[0];
 
     let temp_theta1 = math.sum(math.dotMultiply(Theta1, Theta1));
     //temp_theta1 = math.sum(temp_theta1);
 
-    let Theta2 = nn_params[1];
+    //let Theta2 = nn_params[1];
+    //let Theta2 = nn_params;
     
     let temp_theta2 = math.sum(math.dotMultiply(Theta2, Theta2));
     //temp_theta2 = math.sum(temp_theta2);
     let reg =  lambda / (2*m)  * (temp_theta1 + temp_theta2);
 
     let J = 0;
-    let Theta1Grad = math.zeros(Theta1.length, Theta1[0].length);
-    let Theta2Grad = math.zeros(Theta2.length, Theta2[0].length);
+    let Theta1Grad = math.zeros(Theta1._size);
+    let Theta2Grad = math.zeros(Theta2._size);
 
 
     let ones = math.ones(m);
@@ -91,8 +102,7 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
 
     //back propoagation
 
-    for(let i = 0; i < 40; i++) {
-        console.log(i);
+    for(let i = 0; i < 100; i++) {
         let a1 = X[i];
         a1 = math.transpose(a1);
 
@@ -118,28 +128,13 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
     Theta2Grad = math.add(math.dotMultiply(onem, Theta2Grad), math.multiply((lambda/m), Theta2));
     Theta1Grad = math.add(math.dotMultiply(onem, Theta1Grad), math.multiply((lambda/m), Theta1));
 
-    return [Theta1Grad, Theta2Grad];
+    let returnArr1 = convertToVector(Theta1Grad._data);
+    let returnArr2 = convertToVector(Theta2Grad._data);
 
-/*
-    a1 = X(t, :);
-    a1 = a1';
-    z2 = Theta1 * a1;
-    a2 = sigmoid(z2);
-    a2 = [1 ; a2];
-    z3 = Theta2 * a2;
-    a3 = sigmoid(z3);
+    let nn_params_new = math.matrix(returnArr1.concat(returnArr2));
 
-    delta3 =  a3 - y_vectored(:, t);
 
-    z2 = [1; z2];
-    delta2 = (Theta2' * delta3) .* sigmoidGradient(z2);
-
-    delta2 = delta2(2:end);
-
-    Theta2_grad = Theta2_grad + delta3 * a2';
-    Theta1_grad = Theta1_grad + delta2 * a1';
-*/
-
+    return [J, nn_params_new];
 
     
 }
