@@ -254,6 +254,8 @@ async function showExamples(data) {
     predict(newTheta1, newTheta2, X);
     let newY2 = maxRow(y);
     console.log(newY2);
+
+    
     //let [nn_params, cost] 
     //let output = fmincg(nnCostFunction, nn_params, options, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
     
