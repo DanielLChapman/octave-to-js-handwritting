@@ -188,3 +188,25 @@ export function vectorMultiplication(vector1, vector2) {
 
   return output;
 }
+
+export function maxRow(matrix) {
+  let output = [];
+  for (let x = 0; x < matrix.length; x++) {
+      let max = {
+          index: 0,
+          value: matrix[x][0],
+      }
+      for (let y = 0; y < matrix.length; y++) {
+          if (matrix[x][y] > max.value) {
+              max.index = y+1;
+              if (max.index === 10) {
+                max.index = 0;
+              }
+              max.value = matrix[x][y] 
+          }
+      }
+      output.push(max);
+  }
+
+  return output;
+}

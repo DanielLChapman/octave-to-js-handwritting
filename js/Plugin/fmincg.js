@@ -54,7 +54,7 @@ mathjs.isFinite = function isFinite(value) {
 
 export function fmincg(f, X, options, P1, P2, P3, P4, P5, P6) {
     console.log("Starting FMIN Conjugate Gradient Function...");
-    var length = 100;
+    var length = 10;
 
     let currentX = mathjs.matrix([...X._data])
 
@@ -172,16 +172,6 @@ export function fmincg(f, X, options, P1, P2, P3, P4, P5, P6) {
         var limit = -1;
         console.log('While Loop');
         while(1) {
-            console.log({
-                f3,
-                f2,
-                end: f3-f2,
-                add: f2+f3,
-                z3,
-                d3,
-                divide: (f2-f3)/z3,
-                multiply: (6*((f2-f3)/z3)),
-            });
             while(
                 (
                     mathjs.larger(

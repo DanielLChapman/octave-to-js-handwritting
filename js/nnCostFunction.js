@@ -98,11 +98,11 @@ export function nnCostFunction(nn_params, input_layer_size, hidden_layer_size, n
 
     J = J + reg;
 
-    console.log(J);
+    console.log('J: ' + J );
 
     //back propoagation
 
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < m; i++) {
         let a1 = X[i];
         a1 = math.transpose(a1);
 

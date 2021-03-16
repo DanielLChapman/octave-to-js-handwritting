@@ -1,8 +1,10 @@
 import 'regenerator-runtime/runtime'
 import math from 'mathjs';
-import {initializeThetas, initializeThetasVector, convertYandVector, sigmoidGradient, combineTwoVectors, convertToVector} from './util';
+import {initializeThetas, initializeThetasVector, convertYandVector, sigmoidGradient, combineTwoVectors, convertToVector, maxRow} from './util';
 import {nnCostFunction} from './nnCostFunction';
 import {fmincg} from './Plugin/fmincg';
+import {config} from './iter10data';
+import {predict} from './predict';
 
 const input_layer_size = 28*28;
 const hidden_layer_size = 25;
@@ -237,15 +239,25 @@ async function showExamples(data) {
       lambda
     });
 
+    nn_params = config[0].data;
+
 
     //let J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
 
     console.log(nn_params);
+    //console.log(J);
+
+    let newTheta1 = nn_params.splice(0, input_layer_size*hidden_layer_size);
+    newTheta1 = math.reshape(math.matrix(Theta1), [hidden_layer_size, input_layer_size]);
+    let newTheta2 = math.reshape(math.matrix(nn_params), [num_layers, hidden_layer_size]);
     
+    predict(newTheta1, newTheta2, X);
+    let newY2 = maxRow(y);
+    console.log(newY2);
     //let [nn_params, cost] 
-    let output = fmincg(nnCostFunction, nn_params, options, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
+    //let output = fmincg(nnCostFunction, nn_params, options, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
     
-    console.log(output);
+    //console.log(output);
 
 
 
