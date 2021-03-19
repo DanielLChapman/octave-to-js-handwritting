@@ -226,6 +226,18 @@ export function maxRowIndexOnly(matrix) {
   return output;
 }
 
+export function singleMaxRow(matrix) {
+  let output = 0;
+  let value = matrix[0];
+  for (let i = 0; i < matrix.length; i++) {
+    if (matrix[i] > value) {
+      output = i;
+      value = matrix[i];
+    }
+  }
+  return output;
+}
+
 export function testPrediction(prediction, testData) {
   if (prediction.length !== testData.length) {
 

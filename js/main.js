@@ -148,6 +148,37 @@ export class MnistData {
 }
 let examples = [];
 
+
+let pos = {
+  x: 0,
+  y:0,
+}
+let canvas;
+let ctx;
+
+function setPosition(e) {
+  var rect = canvas.getBoundingClientRect();
+  pos.x = e.clientX - rect.left;
+  pos.y = e.clientY - rect.top;
+}
+
+function draw(e) {
+  // mouse left button must be pressed
+  if (e.buttons !== 1) return;
+
+  ctx.beginPath(); // begin
+
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#FFF';
+
+  ctx.moveTo(pos.x, pos.y); // from
+  setPosition(e);
+  ctx.lineTo(pos.x, pos.y); // to
+
+  ctx.stroke(); // draw it!
+}
+
 async function showExamples(data) {
     // Create a container in the visor
     const surface =
@@ -183,10 +214,13 @@ async function showExamples(data) {
       imageTensor.dispose();
     }
 
-  }
+}
 
-  
+
 (async  () => {
+
+  /*
+    MNIST LOADING, NO NEEDED AT MOMENT
 
     const data = new MnistData();
     await data.load();
@@ -199,6 +233,7 @@ async function showExamples(data) {
     console.log(temp);
     let testX = batchData.xs.arraySync();
     
+    */
     
 
     //old original thetas
@@ -220,18 +255,20 @@ async function showExamples(data) {
     */
 
     //testing data
+    /*
     let testExamples = data.nextTestBatch(NUM_TEST_ELEMENTS);
     let testingX = testExamples.xs.arraySync();
     let testingY = convertYandVector(testExamples.labels.arraySync());
-
+*/
     //X = image data
     //y = labels
 
     //fmincg options data pass
+    /*
     let options = {
       maxIterations: 5
     };
-
+*/
     //vectored thetas for nn_params
     /*
     let VTheta1 = convertToVector(Theta1);
@@ -276,4 +313,18 @@ async function showExamples(data) {
     93.5-95%;
     */
 
+    document.addEventListener('mousemove', draw);
+    document.addEventListener('mousedown', setPosition);
+    document.addEventListener('mouseenter', setPosition);
+
+    
+    canvas = document.querySelector("#main_drawing");
+    console.log(canvas);
+    ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, 280, 280);
+
 })();
+
+
+
