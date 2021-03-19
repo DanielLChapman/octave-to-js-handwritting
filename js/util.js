@@ -198,10 +198,7 @@ export function maxRow(matrix) {
       }
       for (let y = 0; y < matrix.length; y++) {
           if (matrix[x][y] > max.value) {
-              max.index = y+1;
-              if (max.index === 10) {
-                max.index = 0;
-              }
+              max.index = y;
               max.value = matrix[x][y] 
           }
       }

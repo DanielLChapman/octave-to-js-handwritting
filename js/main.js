@@ -3,7 +3,7 @@ import math from 'mathjs';
 import {initializeThetas, initializeThetasVector, convertYandVector, sigmoidGradient, combineTwoVectors, convertToVector, maxRow} from './util';
 import {nnCostFunction} from './nnCostFunction';
 import {fmincg} from './Plugin/fmincg';
-import {config} from './iter10data';
+import {iter400data} from './data/iter400data';
 import {predict} from './predict';
 
 const input_layer_size = 28*28;
@@ -11,6 +11,8 @@ const hidden_layer_size = 25;
 const num_layers = 10;
 //theta1 = 25   401
 //theta2 = 10   26
+
+let batchData;
 
 const IMAGE_SIZE = 784;
 const NUM_CLASSES = 10;
@@ -155,7 +157,7 @@ async function showExamples(data) {
     const examples = data.nextTestBatch(20);
     const numExamples = examples.xs.shape[0];
 
-    let temp = examples.labels.arraySync();
+    batchData = examples;
 
     // Create a canvas element to render each example
     for (let i = 0; i < numExamples; i++) {
@@ -193,6 +195,11 @@ async function showExamples(data) {
 
     await showExamples(data);
 
+    let temp = convertYandVector(  batchData.labels.arraySync());
+    let testX = batchData.xs.arraySync();
+    
+    console.log(temp);
+
     let Theta1 = initializeThetas(25, input_layer_size, NUM_TRAIN_ELEMENTS/100);
     let Theta2 = initializeThetas(10, hidden_layer_size, NUM_TRAIN_ELEMENTS/100);
 
@@ -203,7 +210,7 @@ async function showExamples(data) {
     nn_params.concat(Theta2);
     nn_params = math.matrix(nn_params);
     */
-    let lambda = 1;
+    let lambda = 3;
     const examples = data.nextTrainBatch(NUM_TRAIN_ELEMENTS);
     let X = examples.xs.arraySync();
 
@@ -224,7 +231,9 @@ async function showExamples(data) {
     
     //console.log(J);
 
-    let options = 50;
+    let options = {
+      maxIterations: 5
+    };
 
     let nn_params = math.matrix(VTheta1.concat(VTheta2));
     //nn_params = math.reshape(nn_params, [nn_params._size, 1]);
@@ -239,7 +248,7 @@ async function showExamples(data) {
       lambda
     });
 
-    nn_params = config[0].data;
+    nn_params = math.matrix(iter400data[0].data);
 
 
     //let J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
@@ -247,20 +256,26 @@ async function showExamples(data) {
     console.log(nn_params);
     //console.log(J);
 
+    nn_params = nn_params._data;
+    /*
     let newTheta1 = nn_params.splice(0, input_layer_size*hidden_layer_size);
     newTheta1 = math.reshape(math.matrix(Theta1), [hidden_layer_size, input_layer_size]);
     let newTheta2 = math.reshape(math.matrix(nn_params), [num_layers, hidden_layer_size]);
-    
+    /*
     predict(newTheta1, newTheta2, X);
     let newY2 = maxRow(y);
     console.log(newY2);
+*/
 
-    
     //let [nn_params, cost] 
     //let output = fmincg(nnCostFunction, nn_params, options, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
     
-    //console.log(output);
+    //console.log([...output]);
 
+    let newTheta1 = nn_params.splice(0, input_layer_size*hidden_layer_size);
+    newTheta1 = math.reshape(math.matrix(newTheta1), [hidden_layer_size, input_layer_size]);
+    let newTheta2 = math.reshape(math.matrix(nn_params), [num_layers, hidden_layer_size]);
 
+    predict(newTheta1, newTheta2, testX);
 
 })();

@@ -54,7 +54,7 @@ mathjs.isFinite = function isFinite(value) {
 
 export function fmincg(f, X, options, P1, P2, P3, P4, P5, P6) {
     console.log("Starting FMIN Conjugate Gradient Function...");
-    var length = 10;
+    var length = 1;
 
     let currentX = mathjs.matrix([...X._data])
 
