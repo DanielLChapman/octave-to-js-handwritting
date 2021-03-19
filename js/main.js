@@ -168,8 +168,8 @@ function draw(e) {
 
   ctx.beginPath(); // begin
 
-  ctx.lineWidth = 5;
-  ctx.lineCap = 'round';
+  ctx.lineWidth = 20;
+  ctx.lineCap = 'square';
   ctx.strokeStyle = '#FFF';
 
   ctx.moveTo(pos.x, pos.y); // from
@@ -280,7 +280,7 @@ async function showExamples(data) {
     //grab thetas from iter data sheet
     let nn_params = math.matrix(iter400data[0].data);
     //verify right data is being submitted
-    console.log(nn_params);
+    //console.log(nn_params);
 
     //actual training program fmincg running function and output
     //let [nn_params, cost] 
@@ -325,6 +325,5 @@ async function showExamples(data) {
     ctx.fillRect(0, 0, 280, 280);
 
 })();
-
 
 

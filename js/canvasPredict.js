@@ -61,11 +61,20 @@ const input_layer_size = 28*28;
 const hidden_layer_size = 25;
 const num_layers = 10;
 
+//start
 (() => {
     let prediction_button = document.querySelector('.prediction_button');
     prediction_button.onclick = function() {
 
       let p = prepareImage();
+    }
+
+    let clear_button = document.querySelector("body > button.clear_button");
+    clear_button.onclick = function() {
+        let ctx = document.querySelector("#main_drawing").getContext('2d');
+        ctx.clearRect(0, 0, 280, 280);
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, 280, 280);
     }
 
     let nn_params = math.matrix(iter400data[0].data);
