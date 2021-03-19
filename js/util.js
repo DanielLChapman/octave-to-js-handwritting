@@ -207,3 +207,37 @@ export function maxRow(matrix) {
 
   return output;
 }
+
+
+export function maxRowIndexOnly(matrix) {
+  let output = [];
+  for (let x = 0; x < matrix.length; x++) {
+      let max = 0;
+      let value = matrix[x][0]
+      for (let y = 0; y < matrix.length; y++) {
+          if (matrix[x][y] > value) {
+              max = y;
+              value = matrix[x][y] 
+          }
+      }
+      output.push(max);
+  }
+
+  return output;
+}
+
+export function testPrediction(prediction, testData) {
+  if (prediction.length !== testData.length) {
+
+    return 'Error, mismatched lengths'
+  }
+
+  let total = 0;
+  for (let i = 0; i < prediction.length; i++) {
+    if (prediction[i] === testData[i]) {
+      total += 1;
+    }
+  }
+
+  return (total/prediction.length)*100;
+}

@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime'
 import math from 'mathjs';
-import {initializeThetas, initializeThetasVector, convertYandVector, sigmoidGradient, combineTwoVectors, convertToVector, maxRow} from './util';
+import {initializeThetas, initializeThetasVector, convertYandVector, sigmoidGradient, combineTwoVectors, convertToVector, testPrediction} from './util';
 import {nnCostFunction} from './nnCostFunction';
 import {fmincg} from './Plugin/fmincg';
 import {iter400data} from './data/iter400data';
@@ -196,86 +196,84 @@ async function showExamples(data) {
     await showExamples(data);
 
     let temp = convertYandVector(  batchData.labels.arraySync());
+    console.log(temp);
     let testX = batchData.xs.arraySync();
     
-    console.log(temp);
+    
 
-    let Theta1 = initializeThetas(25, input_layer_size, NUM_TRAIN_ELEMENTS/100);
-    let Theta2 = initializeThetas(10, hidden_layer_size, NUM_TRAIN_ELEMENTS/100);
+    //old original thetas
+    //let Theta1 = initializeThetas(25, input_layer_size, NUM_TRAIN_ELEMENTS/100);
+    //let Theta2 = initializeThetas(10, hidden_layer_size, NUM_TRAIN_ELEMENTS/100);
 
+    //lambda value
+
+    //let lambda = 3;
+
+    //training data
     /*
-    console.log(math.matrix(Theta1));
-
-    let nn_params = Theta1;
-    nn_params.concat(Theta2);
-    nn_params = math.matrix(nn_params);
-    */
-    let lambda = 3;
     const examples = data.nextTrainBatch(NUM_TRAIN_ELEMENTS);
     let X = examples.xs.arraySync();
 
     let y = examples.labels.arraySync();
 
     let newY = math.transpose(math.matrix(y))
+    */
+
+    //testing data
+    let testExamples = data.nextTestBatch(NUM_TEST_ELEMENTS);
+    let testingX = testExamples.xs.arraySync();
+    let testingY = convertYandVector(testExamples.labels.arraySync());
 
     //X = image data
     //y = labels
 
-    let g = math.matrix([-1, -0.5, 0, 0.5, 1]);
-    g = sigmoidGradient(g);
-
-    let VTheta1 = convertToVector(Theta1);
-    let VTheta2 = convertToVector(Theta2);
-
-    //let J = nnCostFunction([Theta1, Theta2], input_layer_size, hidden_layer_size, num_layers, X, newY, lambda);
-    
-    //console.log(J);
-
+    //fmincg options data pass
     let options = {
       maxIterations: 5
     };
 
+    //vectored thetas for nn_params
+    /*
+    let VTheta1 = convertToVector(Theta1);
+    let VTheta2 = convertToVector(Theta2);
     let nn_params = math.matrix(VTheta1.concat(VTheta2));
     //nn_params = math.reshape(nn_params, [nn_params._size, 1]);
+    */
 
-    console.log({
-      X: X,
-      nn_params: [Theta1, Theta2],
-      input_layer_size,
-      hidden_layer_size,
-      num_layers,
-      newY,
-      lambda
-    });
-
-    nn_params = math.matrix(iter400data[0].data);
-
-
-    //let J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
-
+    //grab thetas from iter data sheet
+    let nn_params = math.matrix(iter400data[0].data);
+    //verify right data is being submitted
     console.log(nn_params);
-    //console.log(J);
 
-    nn_params = nn_params._data;
-    /*
-    let newTheta1 = nn_params.splice(0, input_layer_size*hidden_layer_size);
-    newTheta1 = math.reshape(math.matrix(Theta1), [hidden_layer_size, input_layer_size]);
-    let newTheta2 = math.reshape(math.matrix(nn_params), [num_layers, hidden_layer_size]);
-    /*
-    predict(newTheta1, newTheta2, X);
-    let newY2 = maxRow(y);
-    console.log(newY2);
-*/
-
+    //actual training program fmincg running function and output
     //let [nn_params, cost] 
     //let output = fmincg(nnCostFunction, nn_params, options, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
     
     //console.log([...output]);
 
-    let newTheta1 = nn_params.splice(0, input_layer_size*hidden_layer_size);
-    newTheta1 = math.reshape(math.matrix(newTheta1), [hidden_layer_size, input_layer_size]);
-    let newTheta2 = math.reshape(math.matrix(nn_params), [num_layers, hidden_layer_size]);
+    //cost function testing
+    //let J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_layers, X, newY._data, lambda);
+    //console.log(J);
 
-    predict(newTheta1, newTheta2, testX);
+    //copy nn_params for new thetas for prediction
+    let nn_params_for_validation = [...nn_params._data];
+
+    //convert nn_params into new theta objects
+    let newTheta1 = nn_params_for_validation.splice(0, input_layer_size*hidden_layer_size);
+    newTheta1 = math.reshape(math.matrix(newTheta1), [hidden_layer_size, input_layer_size]);
+    let newTheta2 = math.reshape(math.matrix(nn_params_for_validation), [num_layers, hidden_layer_size]);
+
+    //prediction of test batch data
+    /*
+    let p = predict(newTheta1, newTheta2, testX);
+
+    console.log(p);
+
+    console.log(testPrediction(p, temp))
+
+    let testP = predict(newTheta1, newTheta2, testingX);
+    console.log(testPrediction(testP, testingY));
+    93.5-95%;
+    */
 
 })();
