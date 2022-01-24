@@ -20,5 +20,8 @@
   },
   "browserslist": [
     "since 2017-06"
-  ]
+  ],
+  "engines": {
+    "node": "14.x"
+  }
 }
