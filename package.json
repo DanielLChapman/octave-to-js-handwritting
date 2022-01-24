@@ -1,10 +1,10 @@
 {
   "name": "jshandwritting",
-  "version": "1.0",
-  "description": "",
-  "keywords": "",
-  "license": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "Convert octave code to JS and see how it does (does not do well!)",
+  "keywords": ["octave", "js", "handwritting"],
+  "license": "MIT",
+  "author": "Daniel Chapman",
   "scripts": {
     "build": "parcel build index.html",
     "dev": "parcel index.html --open",
