@@ -11,12 +11,10 @@
     "start": "npm run build && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "parcel-bundler": "^1.12.4"
-  },
   "dependencies": {
     "mathjs": "^3.20.2",
-    "ml-util": "^1.1.1"
+    "ml-util": "^1.1.1",
+    "parcel-bundler": "^1.12.4"
   },
   "browserslist": [
     "since 2017-06"
