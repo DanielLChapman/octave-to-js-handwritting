@@ -5,8 +5,10 @@ Experimenting with html5-boilerplate code and parcel.
 Using mathjs (https://mathjs.org/) and ml-util (https://github.com/gulfaraz/ml-util) to assist.
 
 To run locally:
-npm install
-npm run dev
+
+    npm install
+
+    npm run dev
 
 Data is being console logged if you were ever curious about some values
 
