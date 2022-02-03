@@ -22,8 +22,10 @@
 </head>
 
 <body>
-  
+  <h3>Test the prediction by writing on the canvas 0 - 9. Try to fill more of the space as the canvas  gets converted to a smaller image before being tested.</h3>
   <!-- Add your site or application content here -->
+  <br />
+
   <canvas width="280" height= "280" id="main_drawing">
 
   </canvas>
@@ -33,6 +35,21 @@
   <button class="clear_button" type="button">
     Clear Button
   </button>
+
+  <br />
+  <div class="testing-div" style="display: none">
+  
+  What is Being Tested:
+  <img class="testing-image" src="" />
+<br />
+  Prediction:
+<br />
+    <ol>
+      <li><span class="prediction-1"></span></li>
+      <li><span class="prediction-2"></span></li>
+      <li><span class="prediction-3"></span></li>
+    </ol>
+</div>
 
 
   <!-- Import TensorFlow.js -->

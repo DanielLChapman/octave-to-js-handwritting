@@ -253,3 +253,50 @@ export function testPrediction(prediction, testData) {
 
   return (total/prediction.length)*100;
 }
+
+
+export function top3(matrix) {
+  let best = {
+    a: {
+      index: 0, 
+      value: 0
+    },
+    b: {
+      index: 0, 
+      value: 0
+    },
+    c: {
+      index: 0, 
+      value: 0
+    },
+  };
+
+  for (let i = 0; i < matrix.length; i++) {
+    if (matrix[i] > best['a']['value']) {
+      best['c'] = best['b'];
+      best['b'] = best['a'];
+      best['a'] = {
+        index: i,
+        value: matrix[i]
+      };
+    } else if (matrix[i] > best['b']['value']) {
+      best['c'] = best['b'];
+      best['b'] = {
+        index: i,
+        value: matrix[i]
+      };
+    } else if (matrix[i] > best['c']['value']) {
+      best['c'] = {
+        index: i,
+        value: matrix[i]
+      };
+    }
+  };
+
+  document.querySelector('.prediction-1').innerHTML = best['a'].index;
+  document.querySelector('.prediction-2').innerHTML = best['b'].index;
+  document.querySelector('.prediction-3').innerHTML = best['c'].index;
+
+  console.log(best);
+
+}

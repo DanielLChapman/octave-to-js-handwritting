@@ -1,5 +1,5 @@
 import math from 'mathjs';
-import {sigmoid_x, maxRow, singleMaxRow, maxRowIndexOnly} from './util';
+import {sigmoid_x, maxRow, singleMaxRow, maxRowIndexOnly, top3} from './util';
 
 
 export function predict (Theta1, Theta2, X, single=false) {
@@ -13,7 +13,7 @@ export function predict (Theta1, Theta2, X, single=false) {
     let h2 = sigmoid_x(math.multiply(h1, math.transpose(Theta2)))
 
     console.log(h2);
-    
+    top3(h2);
 
     return single ? maxRowIndexOnly(h2) : singleMaxRow(h2);
 }

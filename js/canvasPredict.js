@@ -11,12 +11,16 @@ function prepareImage() {
     //create new canvas and redraw current canvas to 1/10th size
     var dataURL = canvas.toDataURL('image/png', '1.0');
     var img = new Image();
+    
 
     img.src=dataURL;
+    
     let newData;
     img.addEventListener("load", function () {
 
         newData = imageToDataUri(img, 28, 28);
+        console.log(newData)
+        
         let dataSet = newData;
         let p = predict(newTheta1, newTheta2, dataSet);
 
@@ -42,6 +46,9 @@ function imageToDataUri(img, width, height) {
 
     // encode image to data-uri with base64 version of compressed image
     const imageData = ctx.getImageData(0, 0, width, height);
+    
+
+    document.querySelector('.testing-image').src = canvas.toDataURL('image/png', '1.0');
     let datasetBytesView = [];
     for (let j = 0; j < imageData.data.length / 4; j++) {
         // All channels hold an equal value since the image is grayscale, so
@@ -61,16 +68,25 @@ const input_layer_size = 28*28;
 const hidden_layer_size = 25;
 const num_layers = 10;
 
+function openTested() {
+    document.querySelector('.testing-div').style.display="block";
+  }
+  
+  function closeTested() {
+    document.querySelector('.testing-div').style.display="none";
+  }
 //start
 (() => {
     let prediction_button = document.querySelector('.prediction_button');
     prediction_button.onclick = function() {
 
       let p = prepareImage();
+      openTested();
     }
 
     let clear_button = document.querySelector("body > button.clear_button");
     clear_button.onclick = function() {
+        closeTested();
         let ctx = document.querySelector("#main_drawing").getContext('2d');
         ctx.clearRect(0, 0, 280, 280);
         ctx.fillStyle = "#000";
